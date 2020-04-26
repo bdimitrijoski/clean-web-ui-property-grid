@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "module": "commonjs",
+        "target": "es6",
+        "lib": [
+            "es2015",
+            "dom"
+        ],
+        "outDir": "lib",
+        "allowSyntheticDefaultImports": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "forceConsistentCasingInFileNames": true,
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowJs": false,
+        "declaration": true
+    },
+    "files": [
+        "./src/index.ts"
+    ],
+    "compileOnSave": false,
+    "buildOnSave": false
+}

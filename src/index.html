@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Clean Web UI Property Grid</title>
+</head>
+<body>
+    <h1>MK Travel UI</h1>
+    <!-- <flatui-header>
+        test
+    </flatui-header> -->
+
+    <property-grid id="propertyGrid"></property-grid>
+    <button id="getVals" onclick="getValues()">get values</button>
+
+    <script src="clean-web-ui-property-grid.js"></script>
+    <script>
+
+        function getValues(){
+            var grid = document.getElementById('propertyGrid');
+            console.log(grid.getValues());
+        }
+
+        setTimeout(()=>{
+
+            var grid = document.getElementById('propertyGrid');
+
+            // This is our settings object
+			var setObj = {
+				accumulateTicks: true,
+				filter: false,
+				filterSize: 200,
+				buyColor: '#00ff00',
+				sellColor: '#ff0000',
+				someOption: 'Maybe',
+				noGroup: 'I have no group',
+				dontShowMe: 'please',
+				readOnly: 'I am read only'
+			};
+
+			// This is our settings object metadata
+			var cpOptions = { preferredFormat: 'hex', showInput: true, showInitial: true };
+			var metaObj = {
+				dontShowMe: {browsable: false},
+				filter: {group: 'Behavior', name: 'Filter', type: 'boolean'},
+				filterSize: {group: 'Behavior', name: 'Filter size', type: 'number', options: { min: 0, max: 500, step: 10 }},
+				accumulateTicks: {group: 'Behavior', name: 'Accumulate ticks', type: 'boolean'},
+				buyColor: {group: 'Appearance', name: 'Buy color', type: 'color', options: cpOptions},
+				sellColor: {group: 'Appearance', name: 'Sell color', type: 'color', options: { preferredFormat: 'hex', showInput: true, showInitial: true }},
+				someOption: {name: 'Some option', type: 'options', options: ['Yes', 'No', {text:'Not sure', value: 'Maybe'}]},
+				readOnly: {name: 'Read Only', type: 'label', description: 'This is a label', showHelp: false}
+            };
+
+            grid.options = {meta: metaObj};
+            grid.value = setObj;
+            grid.render();
+            
+        }, 1000);
+    </script>
+</body>
+</html>
