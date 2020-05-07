@@ -12,7 +12,10 @@
         test
     </flatui-header> -->
 
-    <property-grid id="propertyGrid"></property-grid>
+    <div id="gridWrapper">
+
+    </div>
+    <!-- <property-grid id="propertyGrid"></property-grid> -->
     <button id="getVals" onclick="getValues()">get values</button>
 
     <script src="clean-web-ui-property-grid.js"></script>
@@ -24,10 +27,30 @@
         }
 
         setTimeout(()=>{
+            const propertyGridWrapper = document.getElementById('gridWrapper');
+            let propertyGrid = document.createElement('property-grid');
+            propertyGrid.id = "pg";
 
-            var grid = document.getElementById('propertyGrid');
+            var cpOptions = { preferredFormat: 'hex', showInput: true, showInitial: true };
+            propertyGrid.config = {
+				dontShowMe: {browsable: false},
+				filter: {group: 'Behavior', name: 'Filter', type: 'boolean'},
+				filterSize: {group: 'Behavior', name: 'Filter size', type: 'number', options: { min: 0, max: 500, step: 10 }},
+				accumulateTicks: {group: 'Behavior', name: 'Accumulate ticks', type: 'boolean'},
+				buyColor: {group: 'Appearance', name: 'Buy color', type: 'color', options: cpOptions},
+				sellColor: {group: 'Appearance', name: 'Sell color', type: 'color', options: { preferredFormat: 'hex', showInput: true, showInitial: true }},
+				someOption: {name: 'Some option', type: 'options', options: ['Yes', 'No', {text:'Not sure', value: 'Maybe'}]},
+				readOnly: {name: 'Read Only', type: 'label', description: 'This is a label', showHelp: false}
+            };
 
-            // This is our settings object
+            const opts = {
+                propertySort: (props)=>(props.sort().reverse())
+            };
+            propertyGrid.options = opts;
+
+            propertyGridWrapper.appendChild(propertyGrid);
+
+             // This is our settings object
 			var setObj = {
 				accumulateTicks: true,
 				filter: false,
@@ -39,23 +62,28 @@
 				dontShowMe: 'please',
 				readOnly: 'I am read only'
 			};
+            propertyGrid.selectedObject = setObj;
 
-			// This is our settings object metadata
-			var cpOptions = { preferredFormat: 'hex', showInput: true, showInitial: true };
-			var metaObj = {
-				dontShowMe: {browsable: false},
-				filter: {group: 'Behavior', name: 'Filter', type: 'boolean'},
-				filterSize: {group: 'Behavior', name: 'Filter size', type: 'number', options: { min: 0, max: 500, step: 10 }},
-				accumulateTicks: {group: 'Behavior', name: 'Accumulate ticks', type: 'boolean'},
-				buyColor: {group: 'Appearance', name: 'Buy color', type: 'color', options: cpOptions},
-				sellColor: {group: 'Appearance', name: 'Sell color', type: 'color', options: { preferredFormat: 'hex', showInput: true, showInitial: true }},
-				someOption: {name: 'Some option', type: 'options', options: ['Yes', 'No', {text:'Not sure', value: 'Maybe'}]},
-				readOnly: {name: 'Read Only', type: 'label', description: 'This is a label', showHelp: false}
-            };
+            // var grid = document.getElementById('propertyGrid');
 
-            grid.options = {meta: metaObj};
-            grid.value = setObj;
-            grid.render();
+           
+
+			// // This is our settings object metadata
+			// var cpOptions = { preferredFormat: 'hex', showInput: true, showInitial: true };
+			// var metaObj = {
+			// 	dontShowMe: {browsable: false},
+			// 	filter: {group: 'Behavior', name: 'Filter', type: 'boolean'},
+			// 	filterSize: {group: 'Behavior', name: 'Filter size', type: 'number', options: { min: 0, max: 500, step: 10 }},
+			// 	accumulateTicks: {group: 'Behavior', name: 'Accumulate ticks', type: 'boolean'},
+			// 	buyColor: {group: 'Appearance', name: 'Buy color', type: 'color', options: cpOptions},
+			// 	sellColor: {group: 'Appearance', name: 'Sell color', type: 'color', options: { preferredFormat: 'hex', showInput: true, showInitial: true }},
+			// 	someOption: {name: 'Some option', type: 'options', options: ['Yes', 'No', {text:'Not sure', value: 'Maybe'}]},
+			// 	readOnly: {name: 'Read Only', type: 'label', description: 'This is a label', showHelp: false}
+            // };
+
+            // grid.options = {meta: metaObj};
+            // grid.value = setObj;
+            // grid.render();
             
         }, 1000);
     </script>
