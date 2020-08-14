@@ -1,22 +1,37 @@
 {
-    "name": "clean-web-ui-property-grid",
-    "version": "1.0.0",
-    "description": ".NET style property grid, written in Plain JavaScript as Web component",
-    "main": "index.js",
-    "repository": "https://github.com/brankodimitrijoski/clean-web-ui-property-grid",
-    "author": "Branko Dimitrijoski",
-    "license": "MIT",
-    "scripts": {
-        "start": "webpack-dev-server",
-        "clean": "shx rm -rf _bundles lib lib-esm",
-        "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack"
-    },
-    "dependencies": {
-        "awesome-typescript-loader": "^3.1.2",
-        "shx": "^0.2.2",
-        "tslint": "^4.5.1",
-        "typescript": "^2.6.2",
-        "webpack": "^2.2.1",
-        "webpack-dev-server": "^2.4.1"
-    }
+  "name": "clean-web-ui-property-grid",
+  "version": "1.0.0",
+  "description": ".NET style property grid, written in Plain JavaScript as Web component",
+  "main": "index.js",
+  "repository": "https://github.com/brankodimitrijoski/clean-web-ui-property-grid",
+  "author": "Branko Dimitrijoski",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "clean": "shx rm -rf _bundles lib lib-esm",
+    "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix",
+    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+  },
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin-tslint": "^3.7.1",
+    "awesome-typescript-loader": "^3.1.2",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-typescript": "^2.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "shx": "^0.2.2",
+    "tslint": "^4.5.1",
+    "typescript": "^3.8.3",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.7.1",
+    "@typescript-eslint/parser": "^3.7.1",
+    "eslint": "^7.5.0",
+    "eslint-plugin-no-loops": "^0.3.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.0.5"
+  }
 }

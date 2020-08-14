@@ -1,91 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Clean Web UI Property Grid</title>
-</head>
-<body>
-    <h1>MK Travel UI</h1>
-    <!-- <flatui-header>
-        test
-    </flatui-header> -->
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 12px;
+      }
+      .block {
+        display: block;
+        overflow: hidden;
+        float: left;
+        margin: 10px;
+        width: 300px;
+      }
+    </style>
+  </head>
 
-    <div id="gridWrapper">
-
+  <body>
+    <div class="block">
+      <h1>Property Grid #1</h1>
+      <property-grid id="pg1"></property-grid>
+      <button id="getVals" onclick="getValues('pg1')">get values</button>
     </div>
-    <!-- <property-grid id="propertyGrid"></property-grid> -->
-    <button id="getVals" onclick="getValues()">get values</button>
+
+    <div class="block">
+      <h1>Property Grid #2</h1>
+      <div id="propertyGridWithConfig"></div>
+
+      <button id="getVals" onclick="getValues('pgpropertyGridWithConfig')">get values</button>
+      <br />
+
+      <h2>Options</h2>
+      <div id="propGridOptions"></div>
+      <button id="getVals" onclick="updateOptions()">
+        update options
+      </button>
+    </div>
+
+    <div class="block">
+      <p>Values:</p>
+      <textarea id="txtValues" cols="40" rows="20"></textarea>
+    </div>
 
     <script src="clean-web-ui-property-grid.js"></script>
     <script>
+      function getValues(target) {
+        var grid = document.getElementById(target);
+        document.getElementById('txtValues').value = JSON.stringify(grid.getValues(), null, 2);
+      }
 
-        function getValues(){
-            var grid = document.getElementById('propertyGrid');
-            console.log(grid.getValues());
-        }
+      function updateOptions() {
+        var options = document.getElementById('pgpropGridOptions').getValues();
+        document.getElementById('pgpropertyGridWithConfig').options = options;
+      }
 
-        setTimeout(()=>{
-            const propertyGridWrapper = document.getElementById('gridWrapper');
-            let propertyGrid = document.createElement('property-grid');
-            propertyGrid.id = "pg";
+      setTimeout(() => {
+        var pgOptions = {
+          preferredFormat: 'hex',
+          showInput: true,
+          showInitial: true,
+          hasGroups: true,
+          propertySort: true,
+          onValueChange: (e) => {
+            console.log(e);
+            if (e.target.id == 'pgfilter2') {
+              e.preventDefault();
+              e.stopPropagation();
+              return false;
+            }
+          },
+        };
 
-            var cpOptions = { preferredFormat: 'hex', showInput: true, showInitial: true };
-            propertyGrid.config = {
-				dontShowMe: {browsable: false},
-				filter: {group: 'Behavior', name: 'Filter', type: 'boolean'},
-				filterSize: {group: 'Behavior', name: 'Filter size', type: 'number', options: { min: 0, max: 500, step: 10 }},
-				accumulateTicks: {group: 'Behavior', name: 'Accumulate ticks', type: 'boolean'},
-				buyColor: {group: 'Appearance', name: 'Buy color', type: 'color', options: cpOptions},
-				sellColor: {group: 'Appearance', name: 'Sell color', type: 'color', options: { preferredFormat: 'hex', showInput: true, showInitial: true }},
-				someOption: {name: 'Some option', type: 'options', options: ['Yes', 'No', {text:'Not sure', value: 'Maybe'}]},
-				readOnly: {name: 'Read Only', type: 'label', description: 'This is a label', showHelp: false}
-            };
+        var pgConfig = {
+          dontShowMe: { browsable: false },
+          filter: { group: 'Behavior', name: 'Filter', type: 'boolean' },
+          filterSize: {
+            group: 'Behavior',
+            name: 'Filter size',
+            type: 'number',
+            options: { min: 0, max: 500, step: 10 },
+          },
+          accumulateTicks: {
+            group: 'Behavior',
+            name: 'Accumulate ticks',
+            type: 'boolean',
+          },
+          buyColor: {
+            group: 'Appearance',
+            name: 'Buy color',
+            type: 'color',
+            options: {},
+          },
+          sellColor: {
+            group: 'Appearance',
+            name: 'Sell color',
+            type: 'color',
+            options: {
+              preferredFormat: 'hex',
+              showInput: true,
+              showInitial: true,
+            },
+          },
+          someOption: {
+            name: 'Some option',
+            type: 'options',
+            items: ['Yes', 'No', { text: 'Not sure', value: 'Maybe' }],
+          },
+          readOnly: {
+            name: 'Read Only',
+            type: 'label',
+            description: 'This is a label',
+            showHelp: false,
+          },
+        };
 
-            const opts = {
-                propertySort: (props)=>(props.sort().reverse())
-            };
-            propertyGrid.options = opts;
+        // var opts = {
+        //   propertySort: (props) => props.sort().reverse(),
+        // };
 
-            propertyGridWrapper.appendChild(propertyGrid);
+        var pgData = {
+          accumulateTicks: true,
+          filter: false,
+          filterSize: 200,
+          buyColor: '#00ff00',
+          sellColor: '#ff0000',
+          someOption: 'No',
+          noGroup: 'I have no group',
+          dontShowMe: 'please',
+          readOnly: 'I am read only',
+        };
 
-             // This is our settings object
-			var setObj = {
-				accumulateTicks: true,
-				filter: false,
-				filterSize: 200,
-				buyColor: '#00ff00',
-				sellColor: '#ff0000',
-				someOption: 'Maybe',
-				noGroup: 'I have no group',
-				dontShowMe: 'please',
-				readOnly: 'I am read only'
-			};
-            propertyGrid.selectedObject = setObj;
+        createPropertyGrid('propertyGridWithConfig', pgConfig, pgOptions, pgData);
 
-            // var grid = document.getElementById('propertyGrid');
+        document.getElementById('pgpropertyGridWithConfig').addEventListener('valueChange', (v) => console.log(v));
 
-           
+        const pg1 = document.getElementById('pg1');
+        pg1.selectedObject = pgData;
 
-			// // This is our settings object metadata
-			// var cpOptions = { preferredFormat: 'hex', showInput: true, showInitial: true };
-			// var metaObj = {
-			// 	dontShowMe: {browsable: false},
-			// 	filter: {group: 'Behavior', name: 'Filter', type: 'boolean'},
-			// 	filterSize: {group: 'Behavior', name: 'Filter size', type: 'number', options: { min: 0, max: 500, step: 10 }},
-			// 	accumulateTicks: {group: 'Behavior', name: 'Accumulate ticks', type: 'boolean'},
-			// 	buyColor: {group: 'Appearance', name: 'Buy color', type: 'color', options: cpOptions},
-			// 	sellColor: {group: 'Appearance', name: 'Sell color', type: 'color', options: { preferredFormat: 'hex', showInput: true, showInitial: true }},
-			// 	someOption: {name: 'Some option', type: 'options', options: ['Yes', 'No', {text:'Not sure', value: 'Maybe'}]},
-			// 	readOnly: {name: 'Read Only', type: 'label', description: 'This is a label', showHelp: false}
-            // };
+        // document.addEventListener('onValueChange', (v) => console.log(v));
 
-            // grid.options = {meta: metaObj};
-            // grid.value = setObj;
-            // grid.render();
-            
-        }, 1000);
+        var pgOptionsConfig = {
+          hasGroups: {
+            group: 'Groups',
+            name: 'Has Groups',
+            type: 'boolean',
+            description: 'Gets or sets a value indicating whether controls are groupped and if groups are visible.',
+          },
+          propertySort: {
+            group: 'Controls',
+            name: 'Properties sort',
+            type: 'boolean',
+            description: 'Gets or sets if PropertyGrid will sort properties by display name.',
+          },
+        };
+        createPropertyGrid('propGridOptions', pgOptionsConfig, pgOptions, pgOptions);
+      }, 1000);
+
+      function createPropertyGrid(id, config, options, data) {
+        var propertyGridWrapper = document.getElementById(id);
+        let propertyGrid = document.createElement('property-grid');
+        propertyGrid.id = 'pg' + id;
+        propertyGrid.config = config;
+        propertyGrid.options = options;
+        propertyGrid.selectedObject = data;
+        propertyGridWrapper.innerHTML = '';
+        propertyGridWrapper.appendChild(propertyGrid);
+      }
     </script>
-</body>
+  </body>
 </html>

@@ -4,4 +4,4 @@ const propertyGridTemplateContent = `
 `;
 propertyGridTemplate.innerHTML = propertyGridTemplateContent;
 
-export {propertyGridTemplate};
+export { propertyGridTemplate };

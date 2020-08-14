@@ -4,6 +4,7 @@ propertyGridStyles.innerHTML = `
     .property-grid {
         border: solid 1px #95B8E7;
         border-spacing: 0;
+        table-layout:fixed;
     }
 
     .property-grid-group {
@@ -25,6 +26,27 @@ propertyGridStyles.innerHTML = `
     .property-grid-cell {
         border: dotted 1px #ccc;
         padding: 5px;
+        position:relative;
+        width: 50%;
+    }
+    .property-grid-cell > input:not([type=checkbox]),
+    .property-grid-cell > select
+    {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        box-sizing: border-box;
+        bottom: 0;
+        padding: 5px;
+        border: 0;
+        outline:0;
+    }
+
+    .property-grid-cell > input[type=color] {
+      width: 50%;
     }
 
     .property-grid-tooltip {
@@ -33,4 +55,4 @@ propertyGridStyles.innerHTML = `
 </style>
 `;
 
-export {propertyGridStyles};
+export { propertyGridStyles };

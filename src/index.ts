@@ -1,1 +1,1 @@
-export {PropertyGrid} from './property-grid.component';
+export { PropertyGrid } from './property-grid.component';
