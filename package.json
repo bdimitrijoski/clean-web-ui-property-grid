@@ -2,7 +2,8 @@
   "name": "clean-web-ui-property-grid",
   "version": "1.0.0",
   "description": ".NET style property grid, written in Plain JavaScript as Web component",
-  "main": "index.js",
+  "main": "dist/property-grid/esm2015/index.js",
+  "types": "dist/property-grid/esm2015/index.d.ts",
   "repository": "https://github.com/brankodimitrijoski/clean-web-ui-property-grid",
   "author": "Branko Dimitrijoski",
   "license": "MIT",
@@ -10,7 +11,7 @@
     "start": "webpack-dev-server",
     "clean": "shx rm -rf _bundles dist",
     "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack",
-    "build-prod": "npm run clean && tsc --target es2018 --outdir dist/property-grid/esm2015 -p tsconfig.json",
+    "build-prod": "npm run clean && tsc --target es2015 --outdir dist/property-grid/esm2015 -p tsconfig.json",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
