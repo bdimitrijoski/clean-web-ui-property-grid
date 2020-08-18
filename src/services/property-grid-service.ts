@@ -11,6 +11,7 @@ export class PropertyGridService {
       id: 'pg',
       name: 'pg',
       label: '',
+      description: '',
       attributes: {},
       options: {},
     });
@@ -26,11 +27,7 @@ export class PropertyGridService {
   private buildGridRowGroup(item: PropertyGridGroup, pgOptions: PropertyGridOptions): PropertyGridRowGroup {
     const group = this.factory.create('row_group', item, pgOptions) as PropertyGridRowGroup;
 
-    item.children.forEach((gridItem) => {
-      if (this.factory.isKnownControl(gridItem.type)) {
-        group.add(this.buildGridRow(gridItem, pgOptions));
-      }
-    });
+    item.children.forEach((gridItem) => group.add(this.buildGridRow(gridItem, pgOptions)));
 
     return group;
   }

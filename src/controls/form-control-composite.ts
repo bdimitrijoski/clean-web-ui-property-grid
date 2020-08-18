@@ -46,6 +46,7 @@ export abstract class FormControlComposite extends FormControl {
     this.iterateControls(destroyCallback);
 
     this.controls = {};
+    super.destroy();
   }
 
   private iterateControls(callback: (control: IFormControl) => void): void {

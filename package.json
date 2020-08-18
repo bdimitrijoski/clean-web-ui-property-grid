@@ -8,8 +8,9 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server",
-    "clean": "shx rm -rf _bundles lib lib-esm",
+    "clean": "shx rm -rf _bundles dist",
     "build": "npm run clean && tsc && tsc -m es6 --outDir lib-esm && webpack",
+    "build-prod": "npm run clean && tsc --target es2018 --outdir dist/property-grid/esm2015 -p tsconfig.json",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"

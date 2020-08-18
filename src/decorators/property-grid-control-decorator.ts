@@ -1,9 +1,6 @@
-import { FormEvent } from 'src/models/types';
-
-import { EventDispatcherService } from 'src/services';
-
 import { IFormControl } from '../controls';
 import { PropertyGridOptions } from '../models';
+import { EventDispatcherService } from '../services';
 
 export const propertyGridControlDecorator = (
   ctrl: IFormControl,
@@ -33,33 +30,28 @@ export const propertyGridControlDecorator = (
     });
   };
 
-  const proxyCtrl = interceptCtrlMethod(
-    ctrl,
-    'onValueChange',
-    (target, name, receiver) => {
-      const origMethod = target[name];
-      return (event: FormEvent<HTMLInputElement>) => {
-        let result;
-        if (pgOptions.onValueChange) {
-          result = pgOptions.onValueChange(event as any);
-
-          if (result === false || event.defaultPrevented) {
-            return false;
-          }
+  if (typeof ctrl.onValueChange === 'function') {
+    ctrl.onValueChange = proxyMethod(ctrl.onValueChange, (target, that, args) => {
+      if (pgOptions.onValueChange) {
+        const event = args[0];
+        const result = pgOptions.onValueChange(event);
+        if (result === false || event.defaultPrevented) {
+          return false;
         }
+      }
+      return target.apply(that, args);
+    });
+  }
 
-        return origMethod(event);
+  if (typeof ctrl.setValue === 'function') {
+    ctrl.setValue = proxyMethod(ctrl.setValue, (target, that, args) => {
+      const data = {
+        name: that.getName(),
+        value: that.getValue(),
       };
-    },
-  );
+      eventDispatcher.send('onValueChanged', data);
+    });
+  }
 
-  proxyCtrl.setValue = proxyMethod(proxyCtrl.setValue, (target, that, args) => {
-    const data = {
-      name: that.getName(),
-      value: that.getValue(),
-    };
-    eventDispatcher.send('onValueChanged', data);
-  });
-
-  return proxyCtrl;
+  return ctrl;
 };

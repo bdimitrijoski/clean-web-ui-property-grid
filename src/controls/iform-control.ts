@@ -48,6 +48,10 @@ export interface IFormControl {
    * Returns component label (title).
    */
   getLabel(): string;
+  /**
+   * Returns component label (title).
+   */
+  getDescription(): string;
 
   /**
    * Returns component options

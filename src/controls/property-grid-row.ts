@@ -26,6 +26,7 @@ export class PropertyGridRow extends FormControlComposite {
 
   createNatveElement(): void {
     super.createNatveElement();
+    this.nativeElement.id = this.nativeElement.id + 'Row';
     this.getNativeElement().classList.add(this.propertyGridRowCssClass);
   }
   attachEventListeners(): void {}
@@ -34,6 +35,15 @@ export class PropertyGridRow extends FormControlComposite {
   private createLabelCell(control: IFormControl): HTMLTableCellElement {
     const cell = this.createGridCell();
     cell.appendChild(document.createTextNode(control.getLabel()));
+
+    if (control.getDescription() && control.getOptions().showHelp) {
+      const helpTooltip = document.createElement('span');
+      helpTooltip.innerHTML = ' [?]';
+      helpTooltip.title = control.getDescription();
+
+      cell.appendChild(helpTooltip);
+    }
+
     return cell;
   }
 

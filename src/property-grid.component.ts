@@ -1,28 +1,22 @@
 import { PropertyGridForm } from './controls';
 import { PropertyGridConfig, PropertyGridOptions } from './models';
-import { PropertyGridEvents } from './models/types';
+import { DataObject, PropertyGridEvents } from './models/types';
 import { propertyGridTemplate } from './property-grid-template';
-import {
-  EventDispatcherService,
-  InjectorService,
-  Logger,
-  PropertyGridGroupsBuilderService,
-  PropertyGridService,
-} from './services';
+import { EventDispatcherService, Logger, PropertyGridGroupsBuilderService, PropertyGridService } from './services';
 import { ConfigParserService } from './services/config-parser-service';
 import { PropertyGridFactory } from './services/property-grid-factory';
 import { propertyGridStyles } from './styles/property-grid-base-style';
+import { PropertyGridUtils } from './utils/property-grid-utils';
 
 export class PropertyGrid extends HTMLElement {
   private _defaultOptions: PropertyGridOptions = {
     canFocus: true,
     controls: {},
-    enabled: true,
     helpVisible: true,
     propertySort: true,
     toolbarVisible: true,
-    visible: true,
   };
+
   private _options: PropertyGridOptions;
   private _config: PropertyGridConfig;
   private _root;
@@ -30,12 +24,17 @@ export class PropertyGrid extends HTMLElement {
   private _gridReady = false;
   private _selectedObject;
   private readonly _selectedGridItem;
-  private groupsBuilder: PropertyGridGroupsBuilderService;
-  private pgBuilder: PropertyGridService;
-  private configParser: ConfigParserService;
   private propertyGridForm: PropertyGridForm;
-  private injector: InjectorService;
   private eventListeners = {};
+  private groupsBuilder: PropertyGridGroupsBuilderService;
+  private configParser: ConfigParserService;
+  private eventDispatcher: EventDispatcherService;
+  private factory: PropertyGridFactory;
+  private pgBuilder: PropertyGridService;
+
+  static get observedAttributes(): string[] {
+    return ['disabled'];
+  }
 
   constructor() {
     super();
@@ -53,28 +52,15 @@ export class PropertyGrid extends HTMLElement {
     this._options = this._defaultOptions;
 
     this._propertyGridEl = this.shadowRoot.querySelector('#propertyGrid');
-    this.injector = new InjectorService();
-    this.injector.register(
-      'groupsBuilder',
-      new PropertyGridGroupsBuilderService(),
-    );
-
-    this.injector.register('configParser', new ConfigParserService());
-    this.injector.register('eventDispatcher', new EventDispatcherService());
-    this.injector.register(
-      'factory',
-      new PropertyGridFactory(this.injector.get('eventDispatcher')),
-    );
-    this.injector.register(
-      'pgBuilder',
-      new PropertyGridService(this.injector.get('factory')),
-    );
+    this.groupsBuilder = new PropertyGridGroupsBuilderService();
+    this.configParser = new ConfigParserService();
+    this.eventDispatcher = new EventDispatcherService();
+    this.factory = new PropertyGridFactory(this.eventDispatcher);
+    this.pgBuilder = new PropertyGridService(this.factory);
 
     this.onValueChanged = this.onValueChanged.bind(this);
 
-    this.eventListeners['onValueChanged'] = this.injector
-      .get<EventDispatcherService>('eventDispatcher')
-      .register(PropertyGridEvents.onValueChanged, this.onValueChanged);
+    this.eventListeners['onValueChanged'] = this.eventDispatcher.register(PropertyGridEvents.onValueChanged, this.onValueChanged);
   }
 
   set config(opts: PropertyGridConfig) {
@@ -83,6 +69,18 @@ export class PropertyGrid extends HTMLElement {
 
   get config(): PropertyGridConfig {
     return this._config;
+  }
+
+  get disabled(): boolean {
+    return this.hasAttribute('disabled');
+  }
+
+  set disabled(val: boolean) {
+    if (val) {
+      this.setAttribute('disabled', '');
+    } else {
+      this.removeAttribute('disabled');
+    }
   }
 
   set options(opts: PropertyGridOptions) {
@@ -99,22 +97,19 @@ export class PropertyGrid extends HTMLElement {
     return this._options;
   }
 
-  set selectedObject(obj) {
+  set selectedObject(obj: DataObject) {
     if (typeof obj === 'string') {
       Logger.getInstance().error('PropertyGrid got invalid option:', obj);
       return;
     } else if (typeof obj !== 'object' || obj === null) {
-      Logger.getInstance().error(
-        'PropertyGrid must get an object in order to initialize the grid.',
-      );
+      Logger.getInstance().error('PropertyGrid must get an object in order to initialize the grid.');
       return;
     }
     this._selectedObject = obj;
-
     this.render();
   }
 
-  get selectedObject(): any {
+  get selectedObject(): DataObject {
     return this.selectedObject;
   }
 
@@ -122,49 +117,76 @@ export class PropertyGrid extends HTMLElement {
     return this._selectedGridItem;
   }
 
-  connectedCallback(): void {}
+  connectedCallback(): void {
+    this.render();
+  }
+  disconnectedCallback(): void {
+    this.destroy();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue): void {
+    if (oldValue === newValue) {
+      return;
+    }
+    if (name === 'disabled') {
+      if (this.disabled) {
+        this.setAttribute('tabindex', '-1');
+        this.setAttribute('aria-disabled', 'true');
+      } else {
+        this.setAttribute('tabindex', '0');
+        this.setAttribute('aria-disabled', 'false');
+      }
+
+      if (this._gridReady) {
+        this.propertyGridForm.setDisabled(this.disabled);
+      }
+    }
+  }
 
   /**
    * Forces the control to invalidate its client area and immediately redraw itself and any child controls.
    */
   render(): void {
-    const origConfig = this._config
-      ? JSON.parse(JSON.stringify(Object.assign({}, this._config)))
-      : null;
-    const config = (this.injector.get(
-      'configParser',
-    ) as ConfigParserService).parse(this._selectedObject, origConfig);
+    if (!this._selectedObject) {
+      return;
+    }
 
-    const groups = (this.injector.get(
-      'groupsBuilder',
-    ) as PropertyGridGroupsBuilderService).buildGroups(
-      config,
-      this.options.propertySort,
-    );
-    this.propertyGridForm = (this.injector.get(
-      'pgBuilder',
-    ) as PropertyGridService).build(groups, this._options);
+    if (this._options && this._options.controls) {
+      this.factory.registerControls(this._options.controls);
+    }
+
+    const origConfig = this._config ? PropertyGridUtils.deepCopy(this._config) : null;
+    const config = this.configParser.parse(this._selectedObject, origConfig);
+
+    if (this.options.hasGroups === false) {
+      this.configParser.assignToGroup(config);
+    }
+
+    const groups = this.groupsBuilder.buildGroups(config, this.options.propertySort);
+    this.propertyGridForm = this.pgBuilder.build(groups, this._options);
     this._propertyGridEl.innerHTML = '';
     this._propertyGridEl.appendChild(this.propertyGridForm.render());
 
     this.propertyGridForm.setData(this._selectedObject);
+
+    this.propertyGridForm.setDisabled(this.disabled);
+    this.propertyGridForm.toggleToolbar(this.options.toolbarVisible);
+    if (this.options.hasGroups === false) {
+      this.propertyGridForm.getNativeElement().classList.add('no-groups');
+    }
+
     this._gridReady = true;
   }
 
-  getValues(): Object {
-    return this.propertyGridForm.getData();
-  }
-
-  disableLog() {
-    Logger.getInstance().logEnabled = false;
+  getValues(): DataObject {
+    return Object.assign(this._selectedObject, this.propertyGridForm.getData());
   }
 
   destroy(): void {
-    this.injector.clear();
     for (const key in this.eventListeners) {
       this.eventListeners[key].unsubscribe();
     }
-
+    this.eventDispatcher.reset();
     this.propertyGridForm.destroy();
   }
 

@@ -5,7 +5,7 @@ export class PropertyGridUtils {
     return value.toString() === 'true';
   }
 
-  static camelize(str) {
+  static camelize(str: string): string {
     return str
       .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
         return index === 0 ? word.toLowerCase() : word.toUpperCase();
@@ -13,7 +13,7 @@ export class PropertyGridUtils {
       .replace(/\s+/g, '');
   }
 
-  static isColor(str) {
+  static isColor(str: string): boolean {
     return str.toString().match(/^#[a-f0-9]{6}$/i) !== null;
   }
 
@@ -21,8 +21,16 @@ export class PropertyGridUtils {
     return item.hasOwnProperty(property) ? item[property] : defaultValue;
   }
 
+  static deepCopy(object: any): any {
+    return JSON.parse(JSON.stringify(object));
+  }
+
   static valueToControlType(value: any): string {
     let valueType = typeof value as string;
+
+    if (valueType === 'undefined') {
+      return;
+    }
 
     if (PropertyGridUtils.isColor(value)) {
       valueType = 'color';

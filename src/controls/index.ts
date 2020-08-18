@@ -12,3 +12,4 @@ export { PropertyGridRow } from './property-grid-row';
 export { PropertyGridRowGroup } from './property-grid-row-group';
 export { SelectFormControl } from './select-form-control';
 export { TextboxFormControl } from './textbox-form-control';
+export { LabelFormControl } from './label-form-control';

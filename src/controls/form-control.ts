@@ -1,4 +1,4 @@
-import { Attributes, Options } from 'src/models/types';
+import { Attributes, Options } from '../models/types';
 
 import { IFormControl } from './iform-control';
 
@@ -6,6 +6,7 @@ export interface FormControlParams {
   id: string;
   name: string;
   label: string;
+  description: string;
   attributes: Attributes;
   options: Options;
 }
@@ -19,6 +20,7 @@ export abstract class FormControl implements IFormControl {
   protected id: string;
   protected name: string;
   protected label: string;
+  protected description: string;
   protected value: any;
   protected attributes: Attributes;
   protected options: Options;
@@ -26,7 +28,7 @@ export abstract class FormControl implements IFormControl {
 
   constructor(params: FormControlParams) {
     Object.assign(this, params);
-    this.options = params.options || { showHelp: false };
+    this.options = params.options || { showHelp: true };
     this.attributes = params.attributes || {};
   }
 
@@ -96,6 +98,10 @@ export abstract class FormControl implements IFormControl {
 
   getName(): string {
     return this.name;
+  }
+
+  getDescription(): string {
+    return this.description;
   }
 
   getNativeElement(): HTMLElement {
