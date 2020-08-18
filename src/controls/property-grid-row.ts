@@ -29,7 +29,9 @@ export class PropertyGridRow extends FormControlComposite {
     this.nativeElement.id = this.nativeElement.id + 'Row';
     this.getNativeElement().classList.add(this.propertyGridRowCssClass);
   }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   attachEventListeners(): void {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   removeEventListeners(): void {}
 
   private createLabelCell(control: IFormControl): HTMLTableCellElement {

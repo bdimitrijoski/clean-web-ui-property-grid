@@ -1,12 +1,16 @@
 /*eslint-disable */
 var path = require('path');
 
+var TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 var webpack = require('webpack');
 
 var PATHS = {
   entryPoint: path.resolve(__dirname, 'src/index.ts'),
   bundles: path.resolve(__dirname, 'dist/bundles'),
 };
+
+console.log('Prod config');
 
 var config = {
   // These are the entry point of our library. We tell webpack to use
@@ -37,7 +41,28 @@ var config = {
   // Activate source maps for the bundles in order to preserve the original
   // source when the user debugs the application
   devtool: 'source-map',
-  plugins: [new webpack.HotModuleReplacementPlugin()],
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'README.md'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+        {
+          from: path.resolve(__dirname, 'package.json'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+        {
+          from: path.resolve(__dirname, 'LICENSE'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+        {
+          from: path.resolve(__dirname, '.npmignore'),
+          to: path.resolve(__dirname, 'dist'),
+        },
+      ],
+    }),
+  ],
   module: {
     // Webpack doesn't understand TypeScript files and a loader is needed.
     // `node_modules` folder is excluded in order to prevent problems with
@@ -57,32 +82,21 @@ var config = {
       },
     ],
   },
+  optimization: {
+    minimizer: [
+      // we specify a custom UglifyJsPlugin here to get source maps in production
+      new TerserPlugin({
+        parallel: true,
+        include: /\.min\.js$/,
+        terserOptions: {
+          ecma: 6,
+        },
+      }),
+    ],
+  },
   stats: {
     colors: {
       green: '\u001b[32m',
-    },
-  },
-
-  devServer: {
-    contentBase: './src',
-    historyApiFallback: true,
-    port: 3000,
-    compress: false,
-    inline: true,
-    hot: true,
-    stats: {
-      assets: true,
-      children: false,
-      chunks: false,
-      hash: false,
-      modules: false,
-      publicPath: false,
-      timings: true,
-      version: false,
-      warnings: true,
-      colors: {
-        green: '\u001b[32m',
-      },
     },
   },
 };

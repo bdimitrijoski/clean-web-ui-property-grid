@@ -124,6 +124,7 @@ export abstract class FormControl implements IFormControl {
     return this.value;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setValue(value: any): void {
     this.value = value;
   }

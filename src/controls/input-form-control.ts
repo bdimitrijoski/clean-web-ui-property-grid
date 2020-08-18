@@ -29,6 +29,7 @@ export abstract class InputFormControl extends FormControl {
     this.getNativeElement().value = this.value.toString();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   setValue(value: any): void {
     super.setValue(value);
     this.renderValue();

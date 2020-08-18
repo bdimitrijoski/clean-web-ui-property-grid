@@ -39,6 +39,7 @@ export class EventDispatcherService {
   }
 
   /** Broadcast event to all registered subscribers */
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   send(event: string, data?: any): void {
     if (!this.subscribers[event]) return;
 

@@ -17,14 +17,17 @@ export class PropertyGridUtils {
     return str.toString().match(/^#[a-f0-9]{6}$/i) !== null;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   static getDefaultVal(item: DataObject, property: string, defaultValue: any): any {
     return item.hasOwnProperty(property) ? item[property] : defaultValue;
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   static deepCopy(object: any): any {
     return JSON.parse(JSON.stringify(object));
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   static valueToControlType(value: any): string {
     let valueType = typeof value as string;
 

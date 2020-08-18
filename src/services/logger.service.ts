@@ -25,6 +25,7 @@ export class Logger {
     if (!this.logEnabled) {
       return;
     }
+    // eslint-disable-next-line no-console
     console.log(msg, data);
   }
 }

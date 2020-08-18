@@ -16,20 +16,6 @@ export const propertyGridControlDecorator = (
     });
   };
 
-  const interceptCtrlMethod = (ctrl, method, callback) => {
-    return new Proxy(ctrl, {
-      get: (target, name, receiver) => {
-        const origMethod = target[name];
-
-        if (typeof origMethod === 'function' && name == method) {
-          return callback(target, name, receiver);
-        } else {
-          return origMethod;
-        }
-      },
-    });
-  };
-
   if (typeof ctrl.onValueChange === 'function') {
     ctrl.onValueChange = proxyMethod(ctrl.onValueChange, (target, that, args) => {
       if (pgOptions.onValueChange) {
@@ -44,6 +30,7 @@ export const propertyGridControlDecorator = (
   }
 
   if (typeof ctrl.setValue === 'function') {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ctrl.setValue = proxyMethod(ctrl.setValue, (target, that, args) => {
       const data = {
         name: that.getName(),

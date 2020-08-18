@@ -124,7 +124,8 @@ export class PropertyGrid extends HTMLElement {
     this.destroy();
   }
 
-  attributeChangedCallback(name, oldValue, newValue): void {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  attributeChangedCallback(name: string, oldValue: any, newValue: any): void {
     if (oldValue === newValue) {
       return;
     }

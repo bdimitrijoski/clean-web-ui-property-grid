@@ -34,6 +34,8 @@ export class LabelFormControl extends FormControl {
     this.setValue(event.target.innerText);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   attachEventListeners(): void {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   removeEventListeners(): void {}
 }
