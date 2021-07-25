@@ -25,7 +25,6 @@ export const propertyGridControlDecorator = (
           return false;
         }
       }
-      return target.apply(that, args);
     });
   }
 

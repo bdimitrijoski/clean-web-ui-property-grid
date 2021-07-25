@@ -98,7 +98,7 @@ setTimeout(() => {
 
   createPropertyGrid('propertyGridWithConfig', pgConfig, pgOptions, pgData);
 
-  document.getElementById('pgpropertyGridWithConfig').addEventListener('valueChange', (v) => console.log(v));
+  document.getElementById('pgpropertyGridWithConfig').addEventListener('valueChanged', (v) => console.log(v));
 
   const pg1 = document.getElementById('pg1');
   pg1.selectedObject = pgData;

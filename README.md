@@ -3,10 +3,9 @@
 - [Overview](#Overview)
 - [Installation](#Installation)
 - [Usage](#Usage)
-  - [Import](#Import)
-  - [Getting Started](#Getting-Started)
-    - [Basic](#Basic)
-    - [Advanced](#Advanced)
+  - [With Typescript](#with-typescript)
+  - [With JavaScript](#with-javascript)
+  - [Advanced](#advanced)
 - [API](#API)
   - [Properties](#Properties)
   - [Methods](#Methods)
@@ -30,19 +29,49 @@ Install with npm:
 
 ## Usage
 
-### Import
+### With Typescript
 
 If you are using typescript:
+```JS
+// In your main file
+import 'clean-web-ui-property-grid';
 
-`import {PropertyGrid} from 'clean-web-ui-property-grid';`
+const pgOptions = {
+  hasGroups: true,
+  propertySort: true,
+  toolbarVisible: true,
+} as PropertyGridOptions;
+
+const pgData = {
+  filter: true,
+  filterSize: 200,
+};
+
+const pg1: PropertyGrid = document.getElementById('pg1') as PropertyGrid;
+pg1.options = pgOptions;
+pg1.selectedObject = pgData;
+
+// To listen for value changes
+pg1.addEventListener('valueChanged', (v) => console.log(v));
+
+// To get values from property grid
+document.querySelector('#getValuesBtn').addEventListener('click', () => {
+  console.log(pg1.getValues());
+});
+
+```
+
+Html markup
+```HTML
+<property-grid id="pg1"></property-grid>
+```
+
+### With JavaScript
 
 With JavaScript, just import the script in the html body:
 
 `<script src="clean-web-ui-property-grid.js"></script>`
 
-### Getting Started
-
-#### Basic
 
 You can use by inserting web component in html:
 
@@ -57,7 +86,7 @@ const pg1 = document.getElementById('pg1');
 pg1.selectedObject = pgData;
 ```
 
-#### Advanced
+### Advanced
 
 More complex example would be to pass config and options to the grid.
 
@@ -93,10 +122,21 @@ var pgData = {
   filterSize: 200
 };
 
+function createPropertyGrid(id, config, options, data) {
+  var propertyGridWrapper = document.getElementById(id);
+  let propertyGrid = document.createElement('property-grid');
+  propertyGrid.id = 'pg' + id;
+  propertyGrid.config = config;
+  propertyGrid.options = options;
+  propertyGrid.selectedObject = data;
+  propertyGridWrapper.innerHTML = '';
+  propertyGridWrapper.appendChild(propertyGrid);
+}
+
 createPropertyGrid('propertyGridWithConfig', pgConfig, pgOptions, pgData);
 
 // To listen for events emmited from grid
- document.getElementById('pgpropertyGridWithConfig').addEventListener('valueChange', (v) => console.log(v));
+ document.getElementById('pgpropertyGridWithConfig').addEventListener('valueChanged', (v) => console.log(v));
 ```
 
 ## API
